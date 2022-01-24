@@ -8,11 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use WeatherAPILib;
 
-class FindCityForecastController extends AbstractController
+class FindForecastController extends AbstractController
 {
     /**
-     * @Route("/find/city/forecast/{city_name}", name="find_city_forecast")
+     * @Route("/find_forecast/{city_name}", name="find_forecast")
      * @param $city_name
+     * @return mixed
      */
     public function index($city_name): Response
     {
@@ -20,7 +21,7 @@ class FindCityForecastController extends AbstractController
         $client = new WeatherAPILib\WeatherAPIClient($key);
         $aPIs = $client->getAPIs();
         try {
-            $weather_forecast = $aPIs->searchAutocompleteWeather($city_name);
+            $weather_forecast = $aPIs->getForecastWeather($city_name, 10);
             return new JsonResponse($weather_forecast);
         } catch (\WeatherAPILib\APIException $exception) {
             return $this->createJsonResponseWithError($exception);
@@ -34,7 +35,5 @@ class FindCityForecastController extends AbstractController
             'reason' => $exception->getReason(),
 
         ]);
-
     }
-
 }
